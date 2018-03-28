@@ -5,3 +5,9 @@
 
 ### 启动
 `npm run dev`
+
+## 注意事项
+
+1.api模拟  [文档地址](https://www.showapi.com/api/apiList)
+
+如果过期(过期时间2019-03-28),替换自己的模拟API即可

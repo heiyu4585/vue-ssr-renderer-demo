@@ -1,17 +1,36 @@
+#vue-ssr从入门到放弃
+# 入门
+## ssr是什么
 
-## TODOList:
+服务器端将Vue组件直接渲染未html字符串,发送至浏览器,最后在浏览器中混合为可交互的应用程序
 
-2.新增老的版本
+服务器渲染的 Vue.js 应用程序也可以被认为是"同构"或"通用"，因为应用程序的大部分代码都可以在服务器和客户端上运行。
+
+## 为什么要用
+
+* 更好的 SEO
+![dom结构](./readme-images/dom结构.png)
+
+* 更快的内容到达时间(time-to-content)
+
+![未做ssr](./readme-images/未ssr.png)
+![ssr效果](readme-images/ssr效果.png)
+
+## 需要注意什么
+
+* 开发条件所限。浏览器特定的代码，只能在某些生命周期钩子函数(lifecycle hook)中使用；一些外部扩展库(external library)可能需要特殊处理，才能在服务器渲染应用程序中运行。
+
+* 涉及构建设置和部署的更多要求。与可以部署在任何静态文件服务器上的完全静态单页面应用程序(SPA)不同，服务器渲染应用程序，需要处于 Node.js server 运行环境。
+
+* 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用 CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的服务器负载，并明智地采用缓存策略。
+
+
+
+# TODOList:
 
 3.两个版本的对比
 
-
-## 注意事项
-
-1.api模拟  [文档地址](https://www.showapi.com/api/apiList)
-
-如果过期(过期时间2019-03-28),替换自己的模拟API即可
-
+# 应用
 
 ## 坑
 
@@ -64,14 +83,37 @@ axios({
             }
           })
 ```
+4.Computed property "currentPage" was assigned to but it has no setter
+  ```js
+  
+   // currentPage () {
+              //     return store.state.currentPage
+              // }
+  
+              currentPage: {
+                  get: function () {
+                      return store.state.currentPage
+                  },
+                  set: function () {
+                  }
+              }
+  ```
+  https://segmentfault.com/q/1010000010358438/a-1020000010358925
+  https://github.com/ElemeFE/mint-ui/issues/1000
 
 
-##参考资料 
+## 参考资料 
 
 ### 官方资料
 
 [vue-ssr](https://ssr.vuejs.org/zh/)
 
+
+#### ssr适合多页 还是 单页
+
+https://github.com/vuejs/vue-hackernews-2.0/issues/187#issuecomment-303688734\
+
+https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 ### 理解ssr
 
@@ -89,9 +131,27 @@ axios({
 
 ### vuex
 
-[详解 Vue & Vuex 实践](https://zhuanlan.zhihu.com/p/25042521)
+官方文档：
+
+[vuex action介绍](https://vuex.vuejs.org/zh-cn/actions.html)
 
 [vuex2-demo](https://github.com/sailengsi/sls-vuex2-demo) demo不错
+
+
+1.[详解 Vue & Vuex 实践](https://zhuanlan.zhihu.com/p/25042521)
+
+2.vuex 的dispatch和commit提交mutation的区别
+```
+很简单，一个异步操作与同步操作的区别。
+
+当你的操作行为中含有异步操作，比如向后台发送请求获取数据，就需要使用action的dispatch去完成了。
+其他使用commit即可。
+```
+3.[vue中更改state的值](https://segmentfault.com/q/1010000009619507/a-1020000009620104)
+
+#### [vuex-demo](https://github.com/sailengsi/sls-vuex2-demo
+
+
 
 ### 可参考的demo
 
@@ -108,3 +168,4 @@ axios({
 [mmf-blog vuejs 2.0 服务端渲染 v2版](https://github.com/lincenying/mmf-blog-vue2-ssr)
 
 [vue-cnode-mobile](https://github.com/soulcm/vue-cnode-mobile/)
+

@@ -5,7 +5,7 @@
   "author": "wangning <wangning1@allinmd.cn>",
   "private": true,
   "scripts": {
-    "ssrbuild": "rm -rf ./dist && webpack --config ./build/webpack.client.conf.js && webpack --config ./build/webpack.server.conf.js "
+    "ssrbuild": "rm -rf ./dist && webpack --config ./build/webpack.client.conf.js && webpack --config ./build/webpack.server.conf.js ",
     "start":"node server"
   },
   "dependencies": {
@@ -13,7 +13,6 @@
     "es6-promise": "^4.2.4",
     "http-proxy-middleware": "^0.18.0",
     "isomorphic-fetch": "^2.2.1",
-    "jquery": "^3.3.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.5.16",

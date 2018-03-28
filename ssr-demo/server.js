@@ -98,13 +98,13 @@ function render (req, res) {
 
 // 反向代理（这里把需要进行反代的路径配置到这里即可）
 // eg:将/api/test 代理到 ${HOST}/api/test
-app.use(proxy('/api', {
-    target: "http://m.medplus.net",
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api': '/'
-    },
-}));
+// app.use(proxy('/api', {
+//     target: "",
+//     changeOrigin: true,
+//     pathRewrite: {
+//         '^/api': '/'
+//     },
+// }));
 
 const port = process.env.PORT || 8018;
 app.listen(port, () => {
