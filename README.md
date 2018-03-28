@@ -16,19 +16,24 @@
 ![未做ssr](./readme-images/未ssr.png)
 ![ssr效果](readme-images/ssr效果.png)
 
-## 需要注意什么
+## 怎么做
+
+* 官方文档 & 教程
+
+* Nuxt.js 
+
+是一个参考了 React.js 栈下的 Next.js 的一个更高封装接口的 SSR 框架。它封装了一层和 vue-router、vuex 及 webpack 设置这一层需求，可以快速开发 SSR.
+
+
+## 缺点
 
 * 开发条件所限。浏览器特定的代码，只能在某些生命周期钩子函数(lifecycle hook)中使用；一些外部扩展库(external library)可能需要特殊处理，才能在服务器渲染应用程序中运行。
 
 * 涉及构建设置和部署的更多要求。与可以部署在任何静态文件服务器上的完全静态单页面应用程序(SPA)不同，服务器渲染应用程序，需要处于 Node.js server 运行环境。
 
-* 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用 CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的服务器负载，并明智地采用缓存策略。
+* 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用 CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的`服务器负载`，并明智地采用`缓存策略`。
 
 
-
-# TODOList:
-
-3.两个版本的对比
 
 # 应用
 
@@ -169,3 +174,9 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 [vue-cnode-mobile](https://github.com/soulcm/vue-cnode-mobile/)
 
+
+# TODOList:
+
+3.如何将 vue-cli改为ssr版本
+
+4.缓存添加(缺点))

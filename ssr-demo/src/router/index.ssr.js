@@ -6,8 +6,8 @@ Vue.use(Router)
 // import pageList from '@/components/page_list'
 
 
-const indexList = () => import('@/components/index_list')
-const pageList = () => import('@/components/page_list')
+const indexList = () => import('@/view/index_list')
+const pageList = () => import('@/view/page_list')
 
 export function createRouter () {
   return new Router({
