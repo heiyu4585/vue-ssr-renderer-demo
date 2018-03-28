@@ -1,4 +1,3 @@
-[vue-hackernews-2.0 源码解析](https://www.jianshu.com/p/8c7d979bedcf)
 
 ## TODOList:
 
