@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import indexList from '@/components/index_list'
-import pageList from '@/components/page_list'
+import indexList from '@/view/index_list'
+import pageList from '@/view/page_list'
 
 Vue.use(Router)
 
