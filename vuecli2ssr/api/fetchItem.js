@@ -22,7 +22,6 @@ function formatterDateTime() {
 }
 
 export  default  function fetchItem (id){
-  console.log("当前页数为",id)
   return new Promise(function (resolve, reject) {
     axios({
       method: 'post',

@@ -1,7 +1,6 @@
 <template>
   <div class="hello">
-    <!--<h1>{{ msg }}</h1>-->
-    <!--<h2>这是通过router的第二个页面组件</h2>-->
+    <router-link :to="{ path: '/'}">返回首页</router-link>
     <ul>
       <li v-for="(ele, index) in item"  :key="index">
         {{ ele.title|| ""}}<br/>
@@ -14,13 +13,18 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  // store,
+  name: 'page_list',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
   },
   methods: {
+  },
+  asyncData ({ store, route }) {
+    // 触发 action 后，会返回 Promise
+    return store.dispatch('fetchItem', {id:route.params.id})
   },
   computed: {
     item(){
@@ -29,10 +33,6 @@ export default {
   },
 
   mounted: function () {
-    //获取页数后 同步数据
-    this.$store.dispatch('fetchItem',{
-      id:this.$route.params.id
-    })
   }
 }
 </script>

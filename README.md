@@ -27,13 +27,33 @@
 
 ## 缺点
 
-* 开发条件所限。浏览器特定的代码，只能在某些生命周期钩子函数(lifecycle hook)中使用；一些外部扩展库(external library)可能需要特殊处理，才能在服务器渲染应用程序中运行。
+* 开发条件所限。浏览器特定的代码，只能在某些生命周期钩子函数(lifecycle hook)中使用；一些外部扩展库(external library)可能需要特殊处理，
+才能在服务器渲染应用程序中运行。
 
-* 涉及构建设置和部署的更多要求。与可以部署在任何静态文件服务器上的完全静态单页面应用程序(SPA)不同，服务器渲染应用程序，需要处于 Node.js server 运行环境。
+* 涉及构建设置和部署的更多要求。与可以部署在任何静态文件服务器上的完全静态单页面应用程序(SPA)不同，服务器渲染应用程序，需要处于
+ Node.js server 运行环境。
 
-* 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用 CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的`服务器负载`，并明智地采用`缓存策略`。
+* 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用
+ CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的`服务器负载`，并明智地采用`缓存策略`。
 
+## 注意事项
 
+* 如果你打算为你的vue项目在node使用 SSR，那么在通用代码中，我们有必要并且需要遵守下面的这些约定：
+   
+* 通用代码: 在客户端与服务器端都会运行的部分为通用代码。
+   
+* 注意服务端只调用beforeCreat与created两个钩子，所以不可以做类似于在created初始化一个定时器，然后在mounted或者destroyed销毁这个定时
+器，不然服务器会慢慢的被这些定时器给榨干了因单线程的机制，在服务器端渲染时，过程中有类似于单例的操作，那么所有的请求都会共享这个单例的操作，所以应该使用工厂函数来确保每个请求之间的独立性。
+
+* 如有在beforeCreat与created钩子中使用第三方的API，需要确保该类API在node端运行时不会出现错误，比如在created钩子中初始化一个数据请求
+的操作，这是正常并且及其合理的做法。但如果只单纯的使用XHR去操作，那在node端渲染时就出现问题了，所以应该采取axios这种浏览器端与服务器端
+都支持的第三方库。
+
+* 最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
+
+# 结构预览
+
+![结构预览](readme-images/hn-architecture.png)
 
 # 应用
 
@@ -106,19 +126,15 @@ axios({
   https://segmentfault.com/q/1010000010358438/a-1020000010358925
   https://github.com/ElemeFE/mint-ui/issues/1000
 
+5.vuex 的dispatch和commit提交mutation的区别
+```
+很简单，一个异步操作与同步操作的区别。
 
-## 注意事项
-
-###  约束
-   如果你打算为你的vue项目在node使用 SSR，那么在通用代码中，我们有必要并且需要遵守下面的这些约定：
-   
-   通用代码: 在客户端与服务器端都会运行的部分为通用代码。
-   
-注意服务端只调用beforeCreat与created两个钩子，所以不可以做类似于在created初始化一个定时器，然后在mounted或者destroyed销毁这个定时器，不然服务器会慢慢的被这些定时器给榨干了
-因单线程的机制，在服务器端渲染时，过程中有类似于单例的操作，那么所有的请求都会共享这个单例的操作，所以应该使用工厂函数来确保每个请求之间的独立性。
-   如有在beforeCreat与created钩子中使用第三方的API，需要确保该类API在node端运行时不会出现错误，比如在created钩子中初始化一个数据请求的操作，这是正常并且及其合理的做法。但如果只单纯的使用XHR去操作，那在node端渲染时就出现问题了，所以应该采取axios这种浏览器端与服务器端都支持的第三方库。
-   最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
-
+当你的操作行为中含有异步操作，比如向后台发送请求获取数据，就需要使用action的dispatch去完成了。
+其他使用commit即可。
+```
+ [vue中更改state的值](https://segmentfault.com/q/1010000009619507/a-1020000009620104)
+ 
 ## 参考资料 
 
 ### 官方资料
@@ -142,9 +158,15 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 [从零开始搭建vue-ssr系列之三：服务器渲染的奥秘](https://segmentfault.com/a/1190000009373793)
 
+### 好文推荐
+
 [Vue项目SSR改造实战](https://segmentfault.com/a/1190000012440041)  可参考性比较强
 
 [史上最详细易懂的vue服务端渲染（ssr）教程](https://github.com/zyl1314/vue-ssr)  可以简单理解,对于后期搭建好想没啥大用
+
+[让vue-cli初始化后的项目集成支持SSR](http://blog.myweb.kim/vue/%E8%AE%A9vue-cli%E5%88%9D%E5%A7%8B%E5%8C%96%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E9%9B%86%E6%88%90%E6%94%AF%E6%8C%81SSR/?utm-source=segmentfault)  好文,值得一看
+
+[vue-hackernews-2.0 源码解读](https://wangfuda.github.io/2017/05/14/vue-hackernews-2.0-code-explain/) 对项目整体结构说明,可以结合官方demo查看更佳
 
 ### vuex
 
@@ -154,41 +176,24 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 [vuex2-demo](https://github.com/sailengsi/sls-vuex2-demo) demo不错
 
+[详解 Vue & Vuex 实践](https://zhuanlan.zhihu.com/p/25042521)
 
-1.[详解 Vue & Vuex 实践](https://zhuanlan.zhihu.com/p/25042521)
-
-2.vuex 的dispatch和commit提交mutation的区别
-```
-很简单，一个异步操作与同步操作的区别。
-
-当你的操作行为中含有异步操作，比如向后台发送请求获取数据，就需要使用action的dispatch去完成了。
-其他使用commit即可。
-```
-3.[vue中更改state的值](https://segmentfault.com/q/1010000009619507/a-1020000009620104)
 
 #### [vuex-demo](https://github.com/sailengsi/sls-vuex2-demo
-
 
 
 ### 可参考的demo
 
 [官方demo](https://github.com/vuejs/vue-hackernews-2.0)  官方demo,大而全,存在接口墙的问题
 
-[vue-hackernews-2.0 源码解析](https://www.jianshu.com/p/8c7d979bedcf)  可以结合官方demo查看更佳
 
 [vnews](https://github.com/tiodot/vnews) 解决官方demo无法访问的问题, 功能类似vue-hackernews-2.0, 只不过内容源换成掘金网站，因而无法使用service worker的push功能。
 
 [Beauty](https://github.com/beauty-enjoy/beauty)  听说挺好,但是没有尝试
+
 
 #### 其他
 
 [mmf-blog vuejs 2.0 服务端渲染 v2版](https://github.com/lincenying/mmf-blog-vue2-ssr)
 
 [vue-cnode-mobile](https://github.com/soulcm/vue-cnode-mobile/)
-
-
-# TODOList:
-
-3.如何将 vue-cli改为ssr版本
-
-4.缓存添加(缺点))
