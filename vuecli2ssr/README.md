@@ -102,11 +102,13 @@ npm run dev
 `npm install prerender-spa-plugin -D`
 
 2. 在src目录下创建两个js:
-
+```
   src
   ├── entry-client.js # 仅运行于浏览器
   └── entry-server.js # 仅运行于服务器
+  ```
 3.修改 /src/router/index.js 配置
+
  修改引入组件改为异步组件
  router改为history模式
 ```js

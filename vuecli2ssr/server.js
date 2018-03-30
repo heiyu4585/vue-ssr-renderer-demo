@@ -27,7 +27,7 @@ const renderer = createBundleRenderer(require('./dist/vue-ssr-server-bundle.json
 });
 
 // 在服务器处理函数中……
-app.get('*', async (req, res) => {
+app.get('*', (req, res) => {
   console.log("被访问了~~")
   const context = {
     url: req.url,

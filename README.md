@@ -65,6 +65,10 @@
 
 ![结构预览](readme-images/hn-architecture.png)
 
+#实现过程 
+![实现过程](readme-images/process.png)
+
+
 # 应用
 
 ## 坑
@@ -210,3 +214,12 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 [mmf-blog vuejs 2.0 服务端渲染 v2版](https://github.com/lincenying/mmf-blog-vue2-ssr)
 
 [vue-cnode-mobile](https://github.com/soulcm/vue-cnode-mobile/)
+
+
+问题:
+
+1. 组件的异步加载模式,2.router,store为什么要改成 异步
+
+应用程序的代码分割或惰性加载，有助于减少浏览器在初始渲染中下载的资源体积，可以极大地改善大体积 bundle 的可交互时间 (TTI - time-to-interactive)。这里的关键在于，对初始首屏而言，"只加载所需"。
+
+2. 如何不跳转页面 验证异步路由的优势
