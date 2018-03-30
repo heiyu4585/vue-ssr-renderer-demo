@@ -58,6 +58,9 @@
 
 * 最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
 
+# 疑惑
+如何与中间层结合
+
 # 结构预览
 
 ![结构预览](readme-images/hn-architecture.png)
@@ -175,6 +178,10 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 [vue-hackernews-2.0 源码解读](https://wangfuda.github.io/2017/05/14/vue-hackernews-2.0-code-explain/) 对项目整体结构说明,可以结合官方demo查看更佳
 
+[Vue 全站服务器渲染 SSR 实践](http://gitbook.cn/books/591170568b2c1f0f85f3b8fb/index.html)
+
+[详解 Vue & Vuex 实践](https://zhuanlan.zhihu.com/p/25042521)  掘金的项目实战
+
 ### vuex
 
 官方文档：
@@ -183,7 +190,6 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 [vuex2-demo](https://github.com/sailengsi/sls-vuex2-demo) demo不错
 
-[详解 Vue & Vuex 实践](https://zhuanlan.zhihu.com/p/25042521)
 
 
 #### [vuex-demo](https://github.com/sailengsi/sls-vuex2-demo
