@@ -66,7 +66,7 @@
 ![结构预览](readme-images/hn-architecture.png)
 
 #实现过程 
-![实现过程](readme-images/process.png)
+![实现过程](readme-images/process.jpeg)
 
 
 # 应用
