@@ -72,7 +72,7 @@ npm start
 ```
 ## 开发环境的服务端渲染流程
 
-![render](readme-images/rundev.png)
+![render](../readme-images/rundev.png)
 
 # 修改过程
 
@@ -98,10 +98,7 @@ npm run dev
 `npm i axios vuex -D`
 
 3)修改为ssr
-1.
-`npm install prerender-spa-plugin -D`
-
-2. 在src目录下创建两个js:
+1. 在src目录下创建两个js:
 ```
   src
   ├── entry-client.js # 仅运行于浏览器
