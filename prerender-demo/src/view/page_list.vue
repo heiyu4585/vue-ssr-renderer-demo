@@ -3,11 +3,13 @@
     <!--<h1>{{ msg }}</h1>-->
     <!--<h2>这是通过router的第二个页面组件</h2>-->
     <ul>
+      <li><button @click="a()">点我</button></li>
       <li v-for="(ele, index) in item"  :key="index">
         {{ ele.title|| ""}}<br/>
         {{ ele.ct || ""}}<br/>
         {{ ele.text ||""}}
       </li>
+
     </ul>
   </div>
 </template>
@@ -21,6 +23,9 @@ export default {
     }
   },
   methods: {
+    a(){
+      console.log('aaa');
+    }
   },
   computed: {
     item(){
