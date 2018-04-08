@@ -1,5 +1,8 @@
-# vue-ssr 前期调研
-# 入门
+# vue-ssr 入门
+no-ssr-demo 未做ssr之前的项目代码用于对比
+vuecli2ssr  将vuecli生成的项目转为ssr
+prerender-demo 使用prerender-spa-plugin 的预渲染demo
+
 ## ssr是什么
 
 服务器端将Vue组件直接渲染未html字符串,发送至浏览器,最后在浏览器中混合为可交互的应用程序
