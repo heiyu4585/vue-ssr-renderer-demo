@@ -1,10 +1,14 @@
 # vue-ssr 入门
+# vue ssr 将vue-cli生成的项目转为ssr
 
+## 目录结构
 -no-ssr-demo 未做ssr之前的项目代码用于对比
 
 -vuecli2ssr  将vuecli生成的项目转为ssr
 
 -prerender-demo 使用prerender-spa-plugin 的预渲染demo
+
+-readme-images readme文件的几个图片
 
 ## ssr是什么
 
