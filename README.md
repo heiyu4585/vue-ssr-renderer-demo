@@ -1,5 +1,4 @@
-# vue-ssr 入门
-# vue ssr 将vue-cli生成的项目转为ssr
+# vue-ssr 入门 (将vue-cli生成的项目转为ssr)
 
 ## 目录结构
 -no-ssr-demo 未做ssr之前的项目代码用于对比
