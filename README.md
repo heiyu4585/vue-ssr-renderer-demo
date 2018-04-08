@@ -1,7 +1,10 @@
 # vue-ssr 入门
-no-ssr-demo 未做ssr之前的项目代码用于对比
-vuecli2ssr  将vuecli生成的项目转为ssr
-prerender-demo 使用prerender-spa-plugin 的预渲染demo
+
+-no-ssr-demo 未做ssr之前的项目代码用于对比
+
+-vuecli2ssr  将vuecli生成的项目转为ssr
+
+-prerender-demo 使用prerender-spa-plugin 的预渲染demo
 
 ## ssr是什么
 
