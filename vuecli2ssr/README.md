@@ -13,9 +13,11 @@ npm run build
 
 
 # serve no reload at localhost:8003
+# 不带优化项的 实现功能
 npm run dev
 
 # serve with hot reload at localhost:8003
+#根据官方demo实现的
 npm run devHot
 
 
