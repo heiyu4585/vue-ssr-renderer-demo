@@ -22,7 +22,13 @@ npm run build --report
 
 # 开启服务
 npm start
+
+#访问(分页功能)
+http://localhost:8088/pageList/1
+http://localhost:8088/pageList/2 
 ```
+
+
 
 ## 目录结构
 
