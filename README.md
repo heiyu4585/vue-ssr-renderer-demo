@@ -21,7 +21,7 @@
 ![未做ssr的dom结构](./readme-images/no-ssr-seo.png)
 ![dom结构](./readme-images/dom结构.png)
 
-* 更快的内容到达时间(time-to-content)
+* 更快的内容到达时间(time-to-content) (fast-3G)
 
 ![未做ssr](./readme-images/未ssr.png)
 ![ssr效果](readme-images/ssr效果.png)
