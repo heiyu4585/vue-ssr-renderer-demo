@@ -6,10 +6,8 @@
 # install dependencies
 npm install
 
-# serve no reload at localhost:8081
-npm run dev
+# 构建
+npm run build
 
-#访问(分页功能)
-http://localhost:8081/pageList/1
-http://localhost:8081/pageList/2 
+查看  `/dist/pageList/1/index.html` 文件
 ```
