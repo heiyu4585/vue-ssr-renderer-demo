@@ -6,6 +6,11 @@
 ### 启动
 `npm run dev`
 
+
+## 访问
+`http://localhost:8080/#/pageList/1`
+`http://localhost:8080/#/pageList/2`
+
 ## 注意事项
 
 1.api模拟  [文档地址](https://www.showapi.com/api/apiList)
