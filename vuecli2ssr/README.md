@@ -8,14 +8,18 @@
 # install dependencies
 npm install
 
-# serve no reload at localhost:8080
-npm run dev
-
-# serve with hot reload at localhost:8080
-npm run devHot
-
 # build for production with minification
 npm run build
+
+
+# serve no reload at localhost:8003
+# 不带优化项的 实现功能
+npm run dev
+
+# serve with hot reload at localhost:8003
+#根据官方demo实现的
+npm run devHot
+
 
 # build for production and view the bundle analyzer report
 npm run build --report
@@ -24,8 +28,8 @@ npm run build --report
 npm start
 
 #访问(分页功能)
-http://localhost:8088/pageList/1
-http://localhost:8088/pageList/2 
+http://localhost:8003/pageList/1
+http://localhost:8003/pageList/2 
 ```
 
 
