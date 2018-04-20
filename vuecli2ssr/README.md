@@ -330,6 +330,55 @@ app.listen(port, () => {
     return store.dispatch('fetchItem', route.params.id)
   },
    mounted: function () {
-  
+
     }
 ```
+
+
+修正的地方
+
+1.在路由文件中mode: 'history', // 注意这里也是为history模式 服务器端独有 客户端时要注释掉
+
+追加
+2.在vue文件里如果需要数据同步 mouted,追加async
+
+3.在app.js中文件工厂方法
+
+export function createApp () {
+  // 同步路由状态(route state)到 store
+  sync(store, router)
+  const app = new Vue({
+    //注入 router\store 到根 Vue 实例
+    router,
+    store,
+    render: h => h(App)
+  })
+  // 返回 app 和 router\store
+  return { app, router, store }
+}
+
+4.app.js修正客户端引用路由等方式
+
+
+
+
+
+  [Vue warn]: You are using the runtime-only build of Vue where the template option is not available. Either pre-compile the templates into render functions, or use the compiler-included build.
+  resolve: {
+    alias: {
+      vue: 'vue/dist/vue.js'
+    }
+  }
+
+  Module build failed: Error: "extract-text-webpack-plugin" loader is used without the corresponding plugin, refer to webpack-contrib/extract-text-webpack-plugin for the usage example
+  plugins: [
+    ...
+    //这样会定义，所有js文件中通过require引入的css都会被打包成相应文件名字的css
+    new ExtractTextPlugin("[name].css"),
+  ]
+  因此解决该报错的方法就是在plugins中添加相应配置！
+  ["extract-text-webpack-plugin”使用的坑](https://zhuanlan.zhihu.com/p/29664914)
+
+[Vue warn]: You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build.
+当前怀疑为webpackbug
+https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/494
