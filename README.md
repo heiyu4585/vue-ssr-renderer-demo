@@ -237,9 +237,14 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 的操作，这是正常并且及其合理的做法。但如果只单纯的使用XHR去操作，那在node端渲染时就出现问题了，所以应该采取axios这种浏览器端与服务器端
  都支持的第三方库。
 
+  在服务端渲染中，created和beforeCreate之外的生命周期钩子不可用，因此项目引用的第三方的库也不可用其它生命周期钩子，这对引用库的选择产生了很大的限制；
+
 * 最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
 
-SSR服务端请求不带cookie，需要手动拿到浏览器的cookie传给服务端的请求。
+* SSR要求dom结构规范，因为浏览器会自动给HTML添加一些结构比如tbody，但是客户端进行混淆服务端放回的HTML时，不会添加这些标签，导致混淆后的HTML和浏览器渲染的HTML不匹配。
+
+
+
 ### 遇到的坑及如何优化
 
 #### 尽量减少对Vue-SSR的依赖
@@ -409,3 +414,22 @@ app.use('/dev/service-worker.js', serve('./dist/service-worker.js'))
 如果是非服务端渲染需要修改config/index.js中assetsPublicPath为/dev/
 
 [vue服务端渲染（SSR）踩坑集锦](https://miyalee.github.io/2018/01/03/blog2018-01-03/)
+
+#### SSR服务端请求不带cookie，需要手动拿到浏览器的cookie传给服务端的请求。
+[再说 Vue SSR 的 Cookies 问题](https://www.mmxiaowu.com/article/596cbb2d436eb550a5423c30)
+[Vue SSR, 在服务端请求数据时怎么带 cookies?](https://segmentfault.com/a/1190000008620362)
+
+#### 其他
+性能问题需要多加关注。
+
+* vue.mixin、axios拦截请求使用不当，会内存泄漏。原因戳这里 
+
+[Global mixins cause memory leak in SSR #5089](https://github.com/vuejs/vue/issues/5089)
+l
+* ru-cache向内存中缓存数据，需要合理缓存改动不频繁的资源。
+
+[解密Vue SSR](https://juejin.im/entry/5ad855c56fb9a045fc665bd7?utm_source=gold_browser_extension)
+
+
+# 待处理
+[Vue.js 服务端渲染业务入门实践](https://segmentfault.com/a/1190000011039920)
