@@ -52,20 +52,6 @@
 * 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用
  CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的`服务器负载`，并明智地采用`缓存策略`。
 
-## 注意事项
-
-* 如果你打算为你的vue项目在node使用 SSR，那么在通用代码中，我们有必要并且需要遵守下面的这些约定：
-   
-* 通用代码: 在客户端与服务器端都会运行的部分为通用代码。
-   
-* 注意服务端只调用beforeCreat与created两个钩子，所以不可以做类似于在created初始化一个定时器，然后在mounted或者destroyed销毁这个定时
-器，不然服务器会慢慢的被这些定时器给榨干了因单线程的机制，在服务器端渲染时，过程中有类似于单例的操作，那么所有的请求都会共享这个单例的操作，所以应该使用工厂函数来确保每个请求之间的独立性。
-
-* 如有在beforeCreat与created钩子中使用第三方的API，需要确保该类API在node端运行时不会出现错误，比如在created钩子中初始化一个数据请求
-的操作，这是正常并且及其合理的做法。但如果只单纯的使用XHR去操作，那在node端渲染时就出现问题了，所以应该采取axios这种浏览器端与服务器端
- 都支持的第三方库。
-
-* 最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
 
 # 疑惑
 如何与中间层结合
@@ -225,18 +211,200 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 [vue-cnode-mobile](https://github.com/soulcm/vue-cnode-mobile/)
 
 
-问题:
-
 1. 组件的异步加载模式,2.router,store为什么要改成 异步
 
 应用程序的代码分割或惰性加载，有助于减少浏览器在初始渲染中下载的资源体积，可以极大地改善大体积 bundle 的可交互时间 (TTI - time-to-interactive)。这里的关键在于，对初始首屏而言，"只加载所需"。
 
-2. 如何不跳转页面 验证异步路由的优势
 
-3. 10次测试时间对比
+需要解决的问题:
 
-4. 每个开发人员都要配置ssr环境
+1. 如果无感知的情况下,改变代码,每个开发人员都要配置ssr环境 (通过node去改逻辑)
 
-5. 单页面多页面结构
+2. 单页面多页面结构
 
-6. 怎么跟中间层结合
+3. 压测 稳定性如何保证
+
+## 注意事项
+
+* 如果你打算为你的vue项目在node使用 SSR，那么在通用代码中，我们有必要并且需要遵守下面的这些约定：
+
+* 通用代码: 在客户端与服务器端都会运行的部分为通用代码。
+
+* 注意服务端只调用beforeCreat与created两个钩子，所以不可以做类似于在created初始化一个定时器，然后在mounted或者destroyed销毁这个定时
+器，不然服务器会慢慢的被这些定时器给榨干了因单线程的机制，在服务器端渲染时，过程中有类似于单例的操作，那么所有的请求都会共享这个单例的操作，所以应该使用工厂函数来确保每个请求之间的独立性。
+
+* 如有在beforeCreat与created钩子中使用第三方的API，需要确保该类API在node端运行时不会出现错误，比如在created钩子中初始化一个数据请求
+的操作，这是正常并且及其合理的做法。但如果只单纯的使用XHR去操作，那在node端渲染时就出现问题了，所以应该采取axios这种浏览器端与服务器端
+ 都支持的第三方库。
+
+* 最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
+
+SSR服务端请求不带cookie，需要手动拿到浏览器的cookie传给服务端的请求。
+### 遇到的坑及如何优化
+
+#### 尽量减少对Vue-SSR的依赖
+SSR虽然有着优化SEO和加快首屏渲染等优点，但对服务端的压力也相当的大。虽然Vue能服务端渲染，但不一定要用它来进行服务端渲染。而且作为新技术，生产环境的使用还有待考验。作为一名优秀的搬砖工，应该在编码时就做好一键切换SSR的准备（误），以便于突发情况下的紧急回退。
+主要要注意的有下面几点：
+1. 数据预取方法的进一步抽离和复用
+关掉SSR之后，数据的初始化可能就要放在mounted等生命周期钩子里了。为了不在开了SSR的时候重复获取数据，我的做法是把asyncData的内容抽出来，放在一个函数里，并检查是否已获取过数据(判断依据视数据不同而不同)。然后分别在asyncData和mounted中调用同一方法：
+```
+<script>
+function fetchData(store) {
+    // 如果未获取过数据，则dispatch action
+    if (...) {
+        return store.dispatch(xxx);
+    }
+    // 获取过则直接return
+    return Promise.resolve();
+}
+export default {
+    asyncData({ store }) {
+        return fetchData(store);
+    },
+    // ...省略无关代码
+    mounted() {
+        return fetchData(this.$store);
+    },
+}
+</script>
+```
+2. 手动完成state的初始化
+为了保证store的一致性，Vue-SSR会将服务端渲染的state挂载在window.__INITIAL_STATE__上，在client-entry.js中调用store.replaceState(window.__INITIAL_STATE__);，保证客户端和服务端的state一致。
+要减少对Vue-SSR的依赖的话，应该是把Vue-SSR渲染出的html插入到后端模板里，再进一步渲染出html：
+```
+<!-- 以nunjucks模板为例  -->
+<body>
+  {% if SSRHtml%}
+    {{SSRHtml|safe}}
+  {% else %}
+  <!-- 用于在关闭SSR后挂载Vue实例 -->
+    <div id="app"></div>
+  {% endif %}
+</body>
+```
+这里有个问题就是，需要renderer使用了template，state才会自动注入windows.__INITIAL_STATE__。然而我们又想保持用普通的后端模板渲染html，这样windows.__INITIAL_STATE__又会为空，该怎么办呢？
+答案其实看一眼Vue-hackernews 的head就知道了。
+其实所谓的自动注入，其实也是直接写在html里拼进去的...
+```
++`<script>
+    window.__INITIAL_STATE__=${serialize(context.initialState, { isJSON: true })
+</script>`
+```
+这里的serialize()其实和JSON.stringify()差不多，不过能把正则表达式和函数也序列化，在某些时候（例如路由匹配的正则）会需要这些能力。一定程度上可以直接用JSON.stringify()代替。
+知道了原理之后，我们就可以在renderer不用template的情况下手动将初始化的动态数据注入到html中啦～
+
+[Vue SSR踩坑小记](https://zybuluo.com/FunC/note/817027)
+
+
+#### 客户端展示异常，服务端报错 window/alert/document is undefined
+
+服务端没有window/alert/document这种东西，需要自行定义，建议方式引入第三方包jsdom辅助定义
+```
+//https://github.com/vuejs/vue-hackernews-2.0/issues/52#issuecomment-255594303
+const { JSDOM } = require('jsdom')
+const dom = new JSDOM('<!doctype html><html><body></body></html>',
+{ url: 'http://localhost' })
+
+global.window = dom.window
+global.document = window.document
+global.navigator = window.navigator
+```
+#### router中配置了scrollBehavior，客户端正常，服务端报错scroll undefined
+
+跟上个问题相同，需要在服务端重声明
+```
+//fixed Not-implemented error
+const isServer = process.env.VUE_ENV === 'server'
+
+if(isServer) {
+    window.scrollTo = function(x, y) {
+        // do something or not
+    }
+}
+
+export function createRouter() {
+    return new Router({
+        scrollBehavior: () => ({ y: 0 }),
+        routes: [
+            { path: '/', component: Homepage }
+        ]
+    })
+}
+```
+#### mismatch
+
+使用ssr会有检查服务端渲染出的结构与直接客户端渲染的结构是否相同，不同会报mismatch。这种问题往往是因为比如table结构没有tbody之类的。
+自己的一些业务操作也可能会产生两端的结构重复，比如我之前为了动态生成meta用了mixin，在服务端用$ssrContext配合操作，客户端则用的document直接更改对应值，因此会出现一个页面有两个重复的meta，造成mismatch，解决方式是在客户端加判断，如果已经有的meta就使用修改而不是增加
+```
+if (meta) {
+    $.parseHTML(meta).forEach(function(el) {
+    	$('meta[name=' + $(el).attr('name') + ']')
+        	.attr('content', $(el).attr('content'))
+    })
+}
+```
+区别终端类型
+
+比如在PC端使用a链接作为入口，移动端使用b链接作为入口
+客户端：使用navigator.userAgent做判断，然后
+```
+Vue.mixin({
+    beforeRouteEnter(to, from, next) {
+        if(judgeUserAgent() && to.path === '/a/' ) {
+            next('/b/')
+        } else {
+            next()
+        }
+    }
+})
+```
+服务端： 在server.js的render中通过req.headers['user-agent']然后通过$ssrContext传递
+```
+if(context.agentID !== null && context.url === '/a/') {
+    router.push('/b/')
+} else {
+    router.push(context.url)
+}
+```
+项目不在服务器对应位置的根目录而在二级目录
+
+一般打包都打包到根目录，获取静态文件资源也从／开始，如果不是，怎么办呢？
+其实也不难，把各种相关配置更改一下就好了，就是这些位置自己摸索到时候有些麻烦，尤其还是ssr,漏掉就可能造成项目起不来或白屏、报错、刷新404。
+
+我这里列了一下要修改的位置(按文件顺序,假设二级目录名为dev)：
+
+`build/setup-dev-server.js`中的`webpack-hot-middleware`
+```
+clientConfig.entry.app = ['webpack-hot-middleware/client?path=/dec/__webpack_hmr', clientConfig.entry.app]
+
+app.use(require('webpack-hot-middleware')(clientCompiler, {
+    path: '/dev/__webpack_hmr'
+}))
+```
+webpack.base.config.js 的output
+```
+output: {
+    path: path.resolve(__dirname, '../dist'),
+    publicPath: '/dev/dist/',
+    filename: '[name].[chunkhash].js'
+},
+```
+entry-client.js 的service worker
+```
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/dev/service-worker.js')
+}
+```
+template.html 的href
+```
+<link rel="shortcut icon" href="/dev/assets/images/favicon.ico">
+```
+server.js 的serve
+```
+app.use(favicon('./src/assets/images/favicon.ico'))
+app.use('/dev/dist', serve('./dist', true))
+app.use('/dev/assets', serve('./src/assets', true))
+app.use('/dev/service-worker.js', serve('./dist/service-worker.js'))
+```
+如果是非服务端渲染需要修改config/index.js中assetsPublicPath为/dev/
+
