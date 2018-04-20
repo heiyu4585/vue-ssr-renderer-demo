@@ -408,3 +408,4 @@ app.use('/dev/service-worker.js', serve('./dist/service-worker.js'))
 ```
 如果是非服务端渲染需要修改config/index.js中assetsPublicPath为/dev/
 
+[vue服务端渲染（SSR）踩坑集锦](https://miyalee.github.io/2018/01/03/blog2018-01-03/)
