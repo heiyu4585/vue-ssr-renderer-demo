@@ -416,9 +416,99 @@ app.use('/dev/service-worker.js', serve('./dist/service-worker.js'))
 [vue服务端渲染（SSR）踩坑集锦](https://miyalee.github.io/2018/01/03/blog2018-01-03/)
 
 #### SSR服务端请求不带cookie，需要手动拿到浏览器的cookie传给服务端的请求。
+
+1.server.js
+```js
+//处理cookie
+var cookieParser = require('cookie-parser');
+
+//不使用签名
+app.use(cookieParser());
+
+
+...
+const context = {
+        title: 'xxxx', // default title
+        url: req.url,
+        cookies: req.headers.cookie
+    }
+    renderer.renderToString(context, (err, html) => {
+        if (err) {
+            return handleError(err)
+        }
+        res.send(html)
+        if (!isProd) {
+            console.log(`whole request: ${Date.now() - s}ms`)
+        }
+    })
+...
+```
+
+[express中cookie的使用和cookie-parser的解读](https://segmentfault.com/a/1190000004139342?_ea=504710)
+2. entry-server
+```js
+  ajax.setCookies(context.cookies) // 这一句
+     
+      // 对所有匹配的路由组件调用 `asyncData()`
+      Promise.all(matchedComponents.map(Component => {
+        if (Component.asyncData) {
+          return Component.asyncData({
+            store,
+              cookies: context.cookies,
+            route: router.currentRoute
+          })
+        }
+
+```
+3. ajaxForServer
+```js
+import axios from 'axios'
+import qs from 'qs'
+export default {
+    api: null,
+    cookies: {},
+    setCookies(value) {
+        // value = value || {}
+        // this.cookies = value
+        this.api = axios.create({
+            // baseURL: config.api,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                // cookie: parseCookie(value)
+                cookie: value
+            },
+            timeout: 30000,
+        })
+    },
+    post(url, data) {
+        if (!this.api) this.setCookies()
+        return this.api({
+            method: 'post',
+            url,
+            data: qs.stringify(data),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            }
+        }).then(res => {
+            return res
+        })
+    },
+    get(url, params) {
+        if (!this.api) this.setCookies()
+        return this.api({
+            method: 'get',
+            url,
+            params,
+        }).then(res => {
+            return res
+        })
+    }
+}
+```
+
 [再说 Vue SSR 的 Cookies 问题](https://www.mmxiaowu.com/article/596cbb2d436eb550a5423c30)
 [Vue SSR, 在服务端请求数据时怎么带 cookies?](https://segmentfault.com/a/1190000008620362)
-
+[Vue SSR, 在服务端请求数据时怎么带 cookies?](https://my.oschina.net/u/3004226/blog/1648131) //参考意义不大
 #### 其他
 性能问题需要多加关注。
 
