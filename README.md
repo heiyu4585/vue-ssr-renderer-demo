@@ -522,4 +522,6 @@ l
 
 
 # 待处理
-[Vue.js 服务端渲染业务入门实践](https://segmentfault.com/a/1190000011039920)
+
+1. [Vue.js 服务端渲染业务入门实践](https://segmentfault.com/a/1190000011039920)
+2. 静态资源走nginx
