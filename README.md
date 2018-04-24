@@ -509,6 +509,19 @@ export default {
 [再说 Vue SSR 的 Cookies 问题](https://www.mmxiaowu.com/article/596cbb2d436eb550a5423c30)
 [Vue SSR, 在服务端请求数据时怎么带 cookies?](https://segmentfault.com/a/1190000008620362)
 [Vue SSR, 在服务端请求数据时怎么带 cookies?](https://my.oschina.net/u/3004226/blog/1648131) //参考意义不大
+[express中cookie的使用和cookie-parser的解读](https://segmentfault.com/a/1190000004139342?_ea=504710)
+1. [How to set cookies when send a request in node ? ](https://github.com/axios/axios/issues/943)
+
+```js
+Axios.request({
+     url: "http://example.com",
+     method: "get",
+     headers:{
+         Cookie: "cookie1=value; cookie2=value; cookie3=value;"
+     } 
+}).then...
+```
+
 #### 其他
 性能问题需要多加关注。
 
