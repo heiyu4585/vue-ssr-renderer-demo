@@ -348,6 +348,15 @@ if (meta) {
     })
 }
 ```
+
+#### [Vue warn]: The client-side rendered virtual DOM tree is not matching server-rendered content. This is likely caused by incorrect HTML markup, for example nesting block-level elements inside <p>, or missing <tbody>. Bailing hydration and performing full client-side render. warn
+
+检查是否entry-client.js是否替换store
+检查客户端其他生命周期钩子是否影响到页面数据的显示，比如用到一些关于数据的v-if等等
+在服务端渲染中，created和beforeCreate之外的生命周期钩子不可用，因此项目引用的第三方的库也不可用其它生命周期钩子，这对引用库的选
+解决方案:
+修改m-home中的 `// created() { ` 为    `beforeMount() {`
+
 区别终端类型
 
 比如在PC端使用a链接作为入口，移动端使用b链接作为入口
