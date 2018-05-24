@@ -52,6 +52,20 @@
 * 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用
  CPU 资源(CPU-intensive - CPU 密集)，因此如果你预料在高流量环境(high traffic)下使用，请准备相应的`服务器负载`，并明智地采用`缓存策略`。
 
+## 注意事项
+
+* 如果你打算为你的vue项目在node使用 SSR，那么在通用代码中，我们有必要并且需要遵守下面的这些约定：
+   
+* 通用代码: 在客户端与服务器端都会运行的部分为通用代码。
+   
+* 注意服务端只调用beforeCreat与created两个钩子，所以不可以做类似于在created初始化一个定时器，然后在mounted或者destroyed销毁这个定时
+器，不然服务器会慢慢的被这些定时器给榨干了因单线程的机制，在服务器端渲染时，过程中有类似于单例的操作，那么所有的请求都会共享这个单例的操作，所以应该使用工厂函数来确保每个请求之间的独立性。
+
+* 如有在beforeCreat与created钩子中使用第三方的API，需要确保该类API在node端运行时不会出现错误，比如在created钩子中初始化一个数据请求
+的操作，这是正常并且及其合理的做法。但如果只单纯的使用XHR去操作，那在node端渲染时就出现问题了，所以应该采取axios这种浏览器端与服务器端
+ 都支持的第三方库。
+
+* 最重要一点: 切勿在通用代码中使用document这种只在浏览器端可以运行的API，反过来也不可以使用只在node端可以运行的API。
 
 # 疑惑
 如何与中间层结合
@@ -210,6 +224,8 @@ https://github.com/hilongjw/vue-ssr-hmr-template/issues/4
 
 [vue-cnode-mobile](https://github.com/soulcm/vue-cnode-mobile/)
 
+
+问题:
 
 1. 组件的异步加载模式,2.router,store为什么要改成 异步
 
