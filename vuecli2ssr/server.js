@@ -6,6 +6,16 @@ const {createBundleRenderer} = require('vue-server-renderer');
 
 const resolve = file => path.resolve(__dirname, file)
 
+const proxy = require('http-proxy-middleware');
+// 反向代理（这里把需要进行反代的路径配置到这里即可）
+// eg:将/api/test 代理到 ${HOST}/api/test
+app.use(proxy('/api', {
+  target: "https://m.medplus.net",
+  changeOrigin: true,
+  pathRewrite: {
+      '^/api': '/'
+  },
+}));
 // 生成服务端渲染函数
 const renderer = createBundleRenderer(require('./dist/vue-ssr-server-bundle.json'), {
   // 推荐

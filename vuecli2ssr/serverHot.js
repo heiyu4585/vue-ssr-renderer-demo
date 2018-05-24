@@ -15,7 +15,16 @@ const serverInfo =
   `vue-server-renderer/${require('vue-server-renderer/package.json').version}`
 
 const app = express()
-
+const proxy = require('http-proxy-middleware');
+// 反向代理（这里把需要进行反代的路径配置到这里即可）
+// eg:将/api/test 代理到 ${HOST}/api/test
+app.use(proxy('/api', {
+  target: "https://m.medplus.net",
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api': '/'
+  },
+}));
 function createRenderer (bundle, options) {
   // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return createBundleRenderer(bundle, Object.assign(options, {
@@ -116,7 +125,7 @@ app.get('*', isProd ? render : (req, res) => {
   readyPromise.then(() => render(req, res))
 })
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8088
 app.listen(port, () => {
   console.log(`server started at localhost:${port}`)
 })
