@@ -8,12 +8,6 @@
 # install dependencies
 npm install
 
-# serve no reload at localhost:8080
-npm run dev
-
-# serve with hot reload at localhost:8080
-npm run devHot
-
 # build for production with minification
 npm run build
 
@@ -27,10 +21,13 @@ npm run dev
 npm run devHot
 
 
-# build for production and view the bundle analyzer report
+# 打包前后需要的bundle文件
 npm run build --report
 
-# 开启服务
+# 开启服务(简单的实现)(需要先执行npm run build)
+npm run simpleStart
+
+# 开启服务(需要先执行npm run build)
 npm start
 
 #访问(分页功能)
