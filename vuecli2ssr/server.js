@@ -3,19 +3,16 @@ const app = new express()
 const fs = require('fs')
 const path = require('path')
 const {createBundleRenderer} = require('vue-server-renderer');
-
 const resolve = file => path.resolve(__dirname, file)
+//定义在启动服务钱先判断中间件中的缓存是否过期，是否直接调用dist文件。
+const serve = (path, cache) => express.static(resolve(path), {
+  maxAge: cache && true ? 1000 * 60 * 60 * 24 * 30 : 0
+})
 
-const proxy = require('http-proxy-middleware');
-// 反向代理（这里把需要进行反代的路径配置到这里即可）
-// eg:将/api/test 代理到 ${HOST}/api/test
-app.use(proxy('/api', {
-  target: "https://m.medplus.net",
-  changeOrigin: true,
-  pathRewrite: {
-      '^/api': '/'
-  },
-}));
+app.use('/static', serve('./dist/static', true))
+
+app.use('/dist', serve('./dist', true))
+
 // 生成服务端渲染函数
 const renderer = createBundleRenderer(require('./dist/vue-ssr-server-bundle.json'), {
   // 推荐
