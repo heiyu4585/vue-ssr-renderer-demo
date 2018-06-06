@@ -5,7 +5,7 @@
   "author": "wangning(wangning4567@163.com)",
   "private": true,
   "scripts": {
-    "dev": "node server",
+    "simpleStart": "node server",
     "devHot": "node serverHot",
     "start": "cross-env NODE_ENV=production node serverHot",
     "build": "rimraf dist && npm run build:client && npm run build:server",
